@@ -73,7 +73,7 @@ export default function Home() {
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    navigate(`/?date=${newDate}`);
+    navigate(`/?date=${newDate}`, { viewTransition: true });
   };
 
   return (

@@ -21,6 +21,7 @@ export function GameThumbnail({ gameId, heatmapData }: GameThumbnailProps) {
 
   return (
     <Link
+      viewTransition
       to={`/game/${gameId}`}
       className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition duration-200"
     >
