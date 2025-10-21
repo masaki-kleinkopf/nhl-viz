@@ -35,7 +35,7 @@ export function ShotPlot({ shots }: ShotPlotProps) {
               cx={svgX}
               cy={svgY}
               r={shot.isGoal ? 2.5 : 1.5}
-              fill={getShotColor(shot)}
+              fill={getShotColor(shot.typeDescKey)}
               opacity={shot.isGoal ? 1 : 0.6}
               stroke={shot.isGoal ? "#FFF" : "none"}
               strokeWidth={shot.isGoal ? 0.5 : 0}
