@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate, useNavigation } from "react-router";
 import type { Route } from "./+types/home";
 import { fetchScheduleByDate, fetchPlayByPlay } from "~/models/nhl.server";
 import { transformToHeatmapData } from "~/utils/coordinates";
@@ -24,26 +24,32 @@ export async function loader({ request }: Route.LoaderArgs) {
       if (selectedDay && selectedDay.games) {
         const now = new Date();
 
-        for (const game of selectedDay.games) {
-          // Skip games that haven't started yet
+        // Filter games that have already started
+        const startedGames = selectedDay.games.filter((game: any) => {
           if (game.startTimeUTC) {
             const gameStartTime = new Date(game.startTimeUTC);
-            if (gameStartTime > now) {
-              continue;
-            }
+            return gameStartTime <= now;
           }
+          return true;
+        });
 
+        // Fetch all game data in parallel instead of sequentially
+        const gamePromises = startedGames.map(async (game: any) => {
           try {
             const playByPlayData = await fetchPlayByPlay(game.id.toString());
             const heatmapData = transformToHeatmapData(playByPlayData);
-            gamesWithData.push({
+            return {
               gameId: game.id.toString(),
               heatmapData,
-            });
+            };
           } catch (error) {
             console.error(`Failed to load game ${game.id}:`, error);
+            return null;
           }
-        }
+        });
+
+        const results = await Promise.all(gamePromises);
+        gamesWithData.push(...results.filter((game) => game !== null));
       }
     }
 
@@ -70,6 +76,8 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   const { games, selectedDate } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
@@ -111,7 +119,7 @@ export default function Home() {
           {games.length > 0 ? (
             <div>
               <h2 className="text-2xl font-semibold mb-4">
-                Games on {selectedDate}
+                {isLoading ? "Loading..." : `Games on ${selectedDate}`}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {games.map((game) => (
