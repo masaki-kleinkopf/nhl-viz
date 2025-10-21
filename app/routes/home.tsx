@@ -133,7 +133,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="bg-gray-800 rounded-lg p-8 text-center">
-              <p className="text-gray-400">No games found for {selectedDate}</p>
+              <p className="text-gray-400">No games found yet for {selectedDate}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Try selecting a different date during the NHL season
               </p>
