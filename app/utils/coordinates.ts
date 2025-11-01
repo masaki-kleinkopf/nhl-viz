@@ -77,8 +77,7 @@ export function transformToHeatmapData(data: PlayByPlayResponse): HeatMapData {
       teamAbbrev,
       scoringChance: details.scoringChance || false,
       isGoal: play.typeDescKey === "goal",
-      shootingPlayerId: details.shootingPlayerId,
-      goalieInNetId: details.goalieInNetId,
+      shootingPlayerId: details.shootingPlayerId ?? details.scoringPlayerId,
     });
   }
 
@@ -91,9 +90,15 @@ export function transformToHeatmapData(data: PlayByPlayResponse): HeatMapData {
     gameDate: data.gameDate,
   };
 
+  // Create roster map for quick player lookups
+  const roster = new Map(
+    data.rosterSpots.map((player) => [player.playerId, player])
+  );
+
   return {
     shots,
     gameInfo,
+    roster,
   };
 }
 
