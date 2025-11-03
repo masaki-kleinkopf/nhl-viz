@@ -14,20 +14,43 @@ export function RinkDiagram({ children }: RinkDiagramProps) {
   const creaseRadius = 6;
   const creaseX = goalLineDistance;
 
+  // Create a path for a proper hockey rink shape with rounded ends
+  const rinkPath = `
+    M ${cornerRadius} 0
+    L ${viewBoxWidth - cornerRadius} 0
+    Q ${viewBoxWidth} 0 ${viewBoxWidth} ${cornerRadius}
+    L ${viewBoxWidth} ${viewBoxHeight - cornerRadius}
+    Q ${viewBoxWidth} ${viewBoxHeight} ${viewBoxWidth - cornerRadius} ${viewBoxHeight}
+    L ${cornerRadius} ${viewBoxHeight}
+    Q 0 ${viewBoxHeight} 0 ${viewBoxHeight - cornerRadius}
+    L 0 ${cornerRadius}
+    Q 0 0 ${cornerRadius} 0
+    Z
+  `;
+
   return (
     <div className="w-full overflow-x-auto">
       <svg
-        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+        viewBox={`-5 -5 ${viewBoxWidth + 10} ${viewBoxHeight + 10}`}
         className="w-full h-auto"
         style={{ maxHeight: "70vh" }}
       >
+        {/* Outer boards/stadium area */}
         <rect
-          x="0"
-          y="0"
-          width={viewBoxWidth}
-          height={viewBoxHeight}
-          fill="#E8F4F8"
-          rx={cornerRadius}
+          x="-5"
+          y="-5"
+          width={viewBoxWidth + 10}
+          height={viewBoxHeight + 10}
+          fill="#4B5563"
+          rx={cornerRadius + 2}
+        />
+
+        {/* Ice surface */}
+        <path
+          d={rinkPath}
+          fill="#FFFFFF"
+          stroke="#D1D5DB"
+          strokeWidth="0.5"
         />
 
         <line

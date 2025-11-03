@@ -24,7 +24,6 @@ export async function loader({ request }: Route.LoaderArgs) {
       if (selectedDay && selectedDay.games) {
         const now = new Date();
 
-        // Filter games that have already started
         const startedGames = selectedDay.games.filter((game: any) => {
           if (game.startTimeUTC) {
             const gameStartTime = new Date(game.startTimeUTC);
@@ -33,7 +32,6 @@ export async function loader({ request }: Route.LoaderArgs) {
           return true;
         });
 
-        // Fetch all game data in parallel instead of sequentially
         const gamePromises = startedGames.map(async (game: any) => {
           try {
             const playByPlayData = await fetchPlayByPlay(game.id.toString());
@@ -85,23 +83,23 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-16">
         <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4">
+          <h1 className="text-5xl font-bold mb-4 text-gray-900">
             NHL Shot Attempt Chart Visualization
           </h1>
-          <p className="text-xl text-gray-300">
+          <p className="text-xl text-gray-600">
             Select a date to view games and their shot charts
           </p>
         </header>
         <main>
-          <div className="bg-gray-800 rounded-lg p-8 mb-8">
+          <div className="bg-white rounded-lg p-8 mb-8 border border-gray-200 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <label
                   htmlFor="date"
-                  className="block text-sm font-medium mb-2"
+                  className="block text-sm font-medium mb-2 text-gray-700"
                 >
                   Select Date
                 </label>
@@ -111,14 +109,14 @@ export default function Home() {
                   name="date"
                   value={selectedDate}
                   onChange={handleDateChange}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 />
               </div>
             </div>
           </div>
           {games.length > 0 ? (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">
                 {isLoading ? "Loading..." : `Games on ${selectedDate}`}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -132,8 +130,8 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-800 rounded-lg p-8 text-center">
-              <p className="text-gray-400">No games found yet for {selectedDate}</p>
+            <div className="bg-white rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+              <p className="text-gray-600">No games found yet for {selectedDate}</p>
               <p className="text-sm text-gray-500 mt-2">
                 Try selecting a different date during the NHL season
               </p>

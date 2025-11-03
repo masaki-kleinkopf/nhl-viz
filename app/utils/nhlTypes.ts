@@ -1,5 +1,32 @@
 // NHL API Type Definitions
 
+export interface PlayerResponse {
+  playerId: number;
+  firstName: {
+    default: string;
+  };
+  lastName: {
+    default: string;
+  };
+  sweaterNumber?: number;
+  position?: string;
+  headshot?: string;
+}
+
+export interface RosterSpot {
+  teamId: number;
+  playerId: number;
+  firstName: {
+    default: string;
+  };
+  lastName: {
+    default: string;
+  };
+  sweaterNumber: number;
+  positionCode: string;
+  headshot: string;
+}
+
 export interface PlayByPlayResponse {
   id: number;
   season: number;
@@ -29,6 +56,7 @@ export interface PlayByPlayResponse {
     abbrev: string;
   };
   plays: Play[];
+  rosterSpots: RosterSpot[];
 }
 
 export interface Play {
@@ -50,6 +78,7 @@ export interface Play {
 export interface ShotDetails {
   eventOwnerTeamId: number;
   shootingPlayerId?: number;
+  scoringPlayerId?: number;
   goalieInNetId?: number;
   shotType?: string;
   xCoord?: number;
@@ -72,7 +101,8 @@ export interface NormalizedShot {
   scoringChance: boolean;
   isGoal: boolean;
   shootingPlayerId?: number;
-  goalieInNetId?: number;
+  shooterName?: string;
+  shooterHeadshot?: string;
 }
 
 export interface GameInfo {
@@ -87,4 +117,5 @@ export interface GameInfo {
 export interface HeatMapData {
   shots: NormalizedShot[];
   gameInfo: GameInfo;
+  roster: Map<number, RosterSpot>;
 }

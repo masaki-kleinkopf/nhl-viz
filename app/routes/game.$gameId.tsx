@@ -16,8 +16,29 @@ export async function loader({ params }: Route.LoaderArgs) {
     const playByPlayData = await fetchPlayByPlay(gameId);
     const heatmapData = transformToHeatmapData(playByPlayData);
 
+    const shotsWithPlayerData = heatmapData.shots.map((shot) => {
+      if (!shot.shootingPlayerId) {
+        return shot;
+      }
+
+      const player = heatmapData.roster.get(shot.shootingPlayerId);
+
+      if (!player) {
+        return shot;
+      }
+
+      return {
+        ...shot,
+        shooterName: `${player.firstName.default} ${player.lastName.default}`,
+        shooterHeadshot: player.headshot,
+      };
+    });
+
     return {
-      heatmapData,
+      heatmapData: {
+        ...heatmapData,
+        shots: shotsWithPlayerData,
+      },
     };
   } catch (error) {
     console.error("Error loading game data:", error);
@@ -46,30 +67,34 @@ export default function Game() {
   const { shots, gameInfo } = heatmapData;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-8">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Shot Chart Visualization</h1>
-          <div className="text-gray-300">
+          <h1 className="text-4xl font-bold mb-2 text-gray-900">
+            Shot Chart Visualization
+          </h1>
+          <div className="text-gray-600">
             <p className="text-xl mb-1">
               {gameInfo.awayTeam} @ {gameInfo.homeTeam}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-500">
               Game Date: {new Date(gameInfo.gameDate).toLocaleDateString()}
             </p>
-            <p className="text-sm text-gray-400">Total Shots: {shots.length}</p>
+            <p className="text-sm text-gray-500">Total Shots: {shots.length}</p>
           </div>
         </header>
         <main>
-          <div className="bg-gray-800 rounded-lg p-6">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
             <RinkDiagram>
               <ShotPlot shots={shots} />
             </RinkDiagram>
           </div>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-2">By Team</h3>
-              <div className="text-sm text-gray-300">
+            <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">
+                By Team
+              </h3>
+              <div className="text-sm text-gray-700">
                 {Object.entries(
                   shots.reduce(
                     (acc, shot) => {

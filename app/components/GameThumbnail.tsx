@@ -23,13 +23,13 @@ export function GameThumbnail({ gameId, heatmapData }: GameThumbnailProps) {
     <Link
       viewTransition
       to={`/game/${gameId}`}
-      className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition duration-200"
+      className="block bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition duration-200"
     >
       <div className="mb-3">
-        <div className="text-sm font-semibold text-gray-200">
+        <div className="text-sm font-semibold text-gray-900">
           {gameInfo.awayTeamAbbrev} @ {gameInfo.homeTeamAbbrev}
         </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-gray-600">
           {new Date(gameInfo.gameDate).toLocaleDateString()}
         </div>
         <div className="text-xs text-gray-500">{shots.length} shots</div>
@@ -37,15 +37,14 @@ export function GameThumbnail({ gameId, heatmapData }: GameThumbnailProps) {
 
       <svg
         viewBox={`0 0 ${RINK_LENGTH} ${RINK_WIDTH}`}
-        className="w-full h-auto bg-white bg-opacity-10 rounded"
+        className="w-full h-auto bg-gray-50 rounded border border-gray-100"
       >
         <rect
           x="0"
           y="0"
           width={RINK_LENGTH}
           height={RINK_WIDTH}
-          fill="#E8F4F8"
-          opacity="0.1"
+          fill="#F9FAFB"
         />
 
         <line
@@ -55,7 +54,7 @@ export function GameThumbnail({ gameId, heatmapData }: GameThumbnailProps) {
           y2={RINK_WIDTH}
           stroke="#003E7E"
           strokeWidth="0.5"
-          opacity="0.3"
+          opacity="0.2"
         />
 
         {shots.map((shot, index) => (
@@ -65,7 +64,7 @@ export function GameThumbnail({ gameId, heatmapData }: GameThumbnailProps) {
             cy={toSVGY(shot.y)}
             r={shot.isGoal ? 1.5 : 0.8}
             fill={getShotColor(shot.typeDescKey)}
-            opacity={shot.isGoal ? 1 : 0.6}
+            opacity={shot.isGoal ? 0.9 : 0.6}
           />
         ))}
       </svg>
